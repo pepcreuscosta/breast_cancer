@@ -2,6 +2,7 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA, SparsePCA
+from sklearn.datasets import load_breast_cancer
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.metrics import roc_auc_score
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -34,6 +35,15 @@ fig.tight_layout()
 fig.savefig("HistogramPlotPCA1.png")
 plt.show()
 
+fig = plt.figure()
+plt.hist(features_pca[M, 1])
+plt.hist(features_pca[B, 1])
+plt.xlabel("Component 2")
+plt.legend(['Malign', 'Benign'])
+fig.tight_layout()
+fig.savefig("HistogramPlotPCA2.png")
+plt.show()
+
 lda = LinearDiscriminantAnalysis(n_components = 2).fit(features_norm, labels)
 features_lda = lda.transform(features_norm)
 fig = plt.figure()
@@ -43,16 +53,6 @@ plt.legend(['Malign', 'Benign'])
 plt.xlabel("Component 1")
 fig.tight_layout()
 fig.savefig("HistogramPlotLDA1.png")
-plt.show()
-
-
-fig = plt.figure()
-plt.hist(features_lda[M, 1])
-plt.hist(features_lda[B, 1])
-plt.xlabel("Component 2")
-plt.legend(['Malign', 'Benign'])
-fig.tight_layout()
-fig.savefig("HistogramPlotPCA2.png")
 plt.show()
 
 fig = plt.figure()
@@ -75,6 +75,12 @@ model_linear = LinearRegression().fit(x_train, y_train)
 forest = ExtraTreesClassifier(n_estimators = 100)
 forest.fit(x_train,y_train)
 importancia = forest.feature_importances_
+plt.bar(np.arange(len(importancia)), importancia, tick_label = data['feature_names'])
+plt.xticks(rotation = 'vertical')
+# plt.margins(0.2)
+plt.subplots_adjust(bottom=0.3)
+plt.show()
+
 print(importancia)
 
 # Miro el score de cada model i faig les prediccions de y_train i y_test
@@ -132,8 +138,8 @@ for gamma in gammas:
 
 # Faig un plot scatter de fpr i tpr per veure la ROC curve.
 fig = plt.figure()
-plt.scatter(fpr_train, tpr_train)
-plt.scatter(fpr_test, tpr_test)
+plt.scatter(fpr_train, tpr_train, s = 2)
+plt.scatter(fpr_test, tpr_test, s = 2)
 plt.xlabel("FPR")
 plt.ylabel("TPR")
 plt.legend(['Train', 'Test'])
